@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7mo C — IPEMYT 319 Roberto Fontanarrosa</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d1a;
+    --card: #13132a;
+    --accent1: #ff3cac;
+    --accent2: #00f5d4;
+    --accent3: #ffe600;
+    --accent4: #784ba0;
+    --text: #f0f0ff;
+    --muted: #7a7a9a;
+    --glow1: rgba(255,60,172,0.35);
+    --glow2: rgba(0,245,212,0.35);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  #cursor {
+    width: 18px; height: 18px;
+    border: 2px solid var(--accent2);
+    border-radius: 50%;
+    position: fixed; pointer-events: none;
+    z-index: 9999; transform: translate(-50%,-50%);
+    transition: width .15s, height .15s, background .15s;
+    mix-blend-mode: screen;
+  }
+  #cursor.big { width: 44px; height: 44px; background: var(--glow1); border-color: var(--accent1); }
+
+  /* PARTICLES */
+  #particles {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    animation: float linear infinite;
+    opacity: 0;
+  }
+  @keyframes float {
+    0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    5%   { opacity: .7; }
+    95%  { opacity: .7; }
+    100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative; z-index: 1;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .hero-badge {
+    background: linear-gradient(90deg, var(--accent1), var(--accent4));
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: .85rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: .4em 1.4em;
+    border-radius: 99px;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    animation: fadeDown .8s ease both;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 18vw, 14rem);
+    line-height: .88;
+    letter-spacing: .02em;
+    background: linear-gradient(135deg, var(--accent1) 0%, var(--accent2) 50%, var(--accent3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeUp .9s .2s ease both;
+    text-shadow: none;
+  }
+
+  .hero-subtitle {
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(1.1rem, 3vw, 2rem);
+    color: var(--accent3);
+    margin: .8rem 0 .4rem;
+    animation: fadeUp .9s .35s ease both;
+  }
+
+  .hero-school {
+    font-size: clamp(.9rem, 2vw, 1.15rem);
+    color: var(--muted);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    animation: fadeUp .9s .5s ease both;
+  }
+
+  .hero-countdown {
+    margin-top: 2.5rem;
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp .9s .65s ease both;
+  }
+  .count-box {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    min-width: 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .count-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--glow1), var(--glow2));
+    opacity: .12;
+  }
+  .count-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    line-height: 1;
+    color: var(--accent2);
+  }
+  .count-label {
+    font-size: .65rem;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--muted);
+    margin-top: .2rem;
+  }
+
+  .scroll-hint {
+    position: absolute; bottom: 2rem;
+    left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: .4rem;
+    color: var(--muted); font-size: .75rem; letter-spacing: .1em;
+    animation: bounce 2s infinite;
+  }
+  .scroll-hint svg { width: 22px; fill: none; stroke: var(--accent2); stroke-width: 2; }
+
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* DIVIDER */
+  .section-divider {
+    text-align: center;
+    padding: 1rem 2rem;
+    position: relative; z-index: 1;
+  }
+  .section-divider h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    letter-spacing: .06em;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .section-divider p {
+    color: var(--muted); font-size: .95rem; margin-top: .4rem;
+  }
+
+  /* ALUMNOS GRID */
+  #alumnos {
+    padding: 2rem 2rem 5rem;
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2rem 1.5rem 1.5rem;
+    border: 1px solid rgba(255,255,255,.06);
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: transform .3s ease, box-shadow .3s ease;
+    animation: cardIn .6s ease both;
+  }
+  .card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(0,0,0,.5), 0 0 30px var(--c-glow);
+  }
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--c1), var(--c2));
+  }
+  .card::after {
+    content: '';
+    position: absolute; top: -60%; left: -60%;
+    width: 180%; height: 180%;
+    background: radial-gradient(circle, var(--c-glow) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity .4s;
+    pointer-events: none;
+  }
+  .card:hover::after { opacity: 1; }
+
+  .card-avatar {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem;
+    background: linear-gradient(135deg, var(--c1), var(--c2));
+    box-shadow: 0 0 0 4px var(--bg), 0 0 0 6px var(--c1);
+    transition: transform .3s;
+  }
+  .card:hover .card-avatar { transform: scale(1.1) rotate(-6deg); }
+
+  .card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: .05em;
+    text-align: center;
+    color: var(--text);
+  }
+
+  .card-role {
+    font-size: .75rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--c1);
+    margin-top: .1rem;
+  }
+
+  .card-skills {
+    margin-top: 1rem;
+    display: flex; flex-wrap: wrap; gap: .4rem; justify-content: center;
+  }
+  .skill-tag {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 99px;
+    padding: .2em .8em;
+    font-size: .7rem;
+    letter-spacing: .06em;
+    color: var(--muted);
+    transition: background .2s, color .2s;
+  }
+  .card:hover .skill-tag {
+    background: rgba(255,255,255,.1);
+    color: var(--text);
+  }
+
+  .card-quote {
+    margin-top: 1rem;
+    font-size: .82rem;
+    color: var(--muted);
+    text-align: center;
+    font-style: italic;
+    line-height: 1.5;
+    min-height: 2.5em;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(30px) scale(.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* STATS BANNER */
+  #stats {
+    position: relative; z-index: 1;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #13132a 0%, #1a0d2e 100%);
+    border-top: 1px solid rgba(255,255,255,.05);
+    border-bottom: 1px solid rgba(255,255,255,.05);
+  }
+  .stats-inner {
+    max-width: 1000px; margin: 0 auto;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 3rem;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--accent1), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat-desc {
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--muted);
+    margin-top: .3rem;
+  }
+
+  /* MANIFESTO */
+  #manifesto {
+    position: relative; z-index: 1;
+    padding: 5rem 2rem;
+    max-width: 900px; margin: 0 auto;
+    text-align: center;
+  }
+  .manifesto-text {
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .manifesto-text .hi { color: var(--accent1); }
+  .manifesto-text .hii { color: var(--accent2); }
+  .manifesto-text .hiii { color: var(--accent3); }
+
+  /* FOTO GRUPAL FUN */
+  #grupal {
+    position: relative; z-index: 1;
+    padding: 3rem 2rem 5rem;
+    text-align: center;
+  }
+  .foto-box {
+    max-width: 700px; margin: 2rem auto 0;
+    background: var(--card);
+    border-radius: 30px;
+    border: 2px solid rgba(255,255,255,.06);
+    padding: 3rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .foto-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(255,60,172,.15) 0%, transparent 65%);
+  }
+  .emoji-row {
+    display: flex; justify-content: center;
+    flex-wrap: wrap; gap: .8rem;
+    font-size: 3.5rem;
+  }
+  .emoji-item {
+    animation: wiggle 3s ease-in-out infinite;
+    display: inline-block;
+    cursor: none;
+    transition: transform .2s;
+  }
+  .emoji-item:hover { transform: scale(1.4) rotate(-10deg) !important; }
+
+  @keyframes wiggle {
+    0%,100% { transform: rotate(-4deg); }
+    50%      { transform: rotate(4deg); }
+  }
+
+  .foto-caption {
+    margin-top: 1.5rem;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.3rem;
+    color: var(--accent3);
+  }
+
+  /* EGRESO SECTION */
+  #egreso {
+    position: relative; z-index: 1;
+    padding: 4rem 2rem 6rem;
+    text-align: center;
+  }
+  .egreso-card {
+    max-width: 750px; margin: 2.5rem auto 0;
+    background: linear-gradient(135deg, #1d0b38, #0b2233);
+    border-radius: 30px;
+    border: 1px solid rgba(255,230,0,.18);
+    padding: 3rem 2.5rem;
+    position: relative; overflow: hidden;
+  }
+  .egreso-card::before {
+    content: '🎓';
+    position: absolute; font-size: 12rem; opacity: .04;
+    top: -2rem; right: -2rem;
+    line-height: 1;
+  }
+  .egreso-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    letter-spacing: .05em;
+    background: linear-gradient(90deg, var(--accent3), var(--accent1));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .egreso-desc {
+    margin-top: 1rem;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #ccc;
+  }
+  .egreso-desc strong { color: var(--accent2); }
+
+  /* FOOTER */
+  footer {
+    position: relative; z-index: 1;
+    padding: 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,.05);
+    color: var(--muted);
+    font-size: .8rem;
+    letter-spacing: .06em;
+  }
+  footer span { color: var(--accent1); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 1.2rem; left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: rgba(13,13,26,.8);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 99px;
+    padding: .5rem 1.5rem;
+    display: flex; gap: 1.5rem; align-items: center;
+  }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: .8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    transition: color .2s;
+  }
+  nav a:hover { color: var(--accent2); }
+
+  /* GLITCH EFFECT ON HERO */
+  .glitch {
+    position: relative;
+  }
+  .glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--accent1) 0%, var(--accent2) 50%, var(--accent3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .glitch::before {
+    left: 3px; top: 0;
+    animation: glitch1 4s infinite;
+    clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+  }
+  .glitch::after {
+    left: -3px; top: 0;
+    animation: glitch2 4s infinite;
+    clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+  }
+  @keyframes glitch1 {
+    0%,90%,100% { opacity: 0; }
+    92%,96% { opacity: .8; transform: translateX(-4px); }
+    94%,98% { opacity: .8; transform: translateX(4px); }
+  }
+  @keyframes glitch2 {
+    0%,85%,100% { opacity: 0; }
+    87%,91% { opacity: .8; transform: translateX(4px); }
+    89%,93% { opacity: .8; transform: translateX(-4px); }
+  }
+
+  /* UTILS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 999; pointer-events: none;
+    opacity: .025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px;
+  }
+
+  /* CONFETTI burst */
+  .confetti-piece {
+    position: fixed;
+    width: 10px; height: 10px;
+    pointer-events: none;
+    z-index: 9998;
+    border-radius: 2px;
+    animation: confettiFall 1.5s ease-out forwards;
+  }
+  @keyframes confettiFall {
+    0%   { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+    100% { opacity: 0; transform: translateY(200px) rotate(720deg) scale(.3); }
+  }
+
+  /* SCAN LINE */
+  .scanline {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent2), transparent);
+    opacity: .3;
+    z-index: 998;
+    pointer-events: none;
+    animation: scanDown 8s linear infinite;
+  }
+  @keyframes scanDown {
+    0%   { top: 0; }
+    100% { top: 100%; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    nav {
+      top: auto;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: .5rem 1rem;
+      gap: .8rem;
+      width: calc(100% - 2rem);
+      justify-content: center;
+    }
+    nav a { font-size: .7rem; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div class="scanline"></div>
+<div id="particles"></div>
+
+<nav>
+  <a href="#hero">Inicio</a>
+  <a href="#alumnos">Alumnos</a>
+  <a href="#manifesto">Nosotros</a>
+  <a href="#egreso">Egreso</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <span class="hero-badge">✦ Promoción 2026 ✦ Técnicos en Informática</span>
+  <h1 class="hero-title glitch" data-text="7mo C">7mo C</h1>
+  <p class="hero-subtitle">IPEMYT N°319 — Roberto Fontanarrosa 💻</p>
+  <p class="hero-school">Técnicos en Informática Profesional y Personal</p>
+
+  <div class="hero-countdown" id="countdown">
+    <div class="count-box"><div class="count-num" id="cd-dias">--</div><div class="count-label">Días</div></div>
+    <div class="count-box"><div class="count-num" id="cd-horas">--</div><div class="count-label">Horas</div></div>
+    <div class="count-box"><div class="count-num" id="cd-min">--</div><div class="count-label">Min</div></div>
+    <div class="count-box"><div class="count-num" id="cd-seg">--</div><div class="count-label">Seg</div></div>
+  </div>
+  <p style="margin-top:.8rem; font-size:.75rem; color:var(--muted); letter-spacing:.1em;">CUENTA REGRESIVA PARA EL EGRESO 🎓</p>
+
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-num" data-target="9">0</div>
+      <div class="stat-desc">Alumnos épicos</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="7">0</div>
+      <div class="stat-desc">Años de cursada</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="100">0</div>
+      <div class="stat-desc">% de actitud</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="∞" class="inf">∞</div>
+      <div class="stat-desc">Líneas de código escritas</div>
+    </div>
+  </div>
+</div>
+
+<!-- ALUMNOS -->
+<section id="alumnos">
+  <div class="section-divider" style="padding-top:4rem">
+    <h2>Los 9 Cracks</h2>
+    <p>El squad más techie del Fontanarrosa</p>
+  </div>
+  <div class="grid" id="alumnosGrid"></div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="section-divider">
+    <h2>Nuestro Manifiesto</h2>
+  </div>
+  <div class="manifesto-text" style="margin-top:2rem" id="manifestoText"></div>
+</section>
+
+<!-- FOTO GRUPAL -->
+<section id="grupal">
+  <div class="section-divider">
+    <h2>La Banda</h2>
+    <p>9 cerebros, 1 sola familia</p>
+  </div>
+  <div class="foto-box">
+    <div class="emoji-row" id="emojiRow"></div>
+    <div class="foto-caption">7mo C — Siempre juntos 🤝</div>
+  </div>
+</section>
+
+<!-- EGRESO -->
+<section id="egreso">
+  <div class="section-divider">
+    <h2>El Gran Momento</h2>
+  </div>
+  <div class="egreso-card">
+    <div class="egreso-title">Técnicos en Informática<br>Profesional y Personal</div>
+    <div class="egreso-desc">
+      Después de <strong>7 años de camino</strong>, de proyectos, desafíos, noches de debugging
+      y risas en el aula, el <strong>7mo C</strong> del IPEMYT N°319 <strong>Roberto Fontanarrosa</strong>
+      está listo para conquistar el mundo tech. 🚀<br><br>
+      Nacho, Lucas, Azul, Joaquín, Yazmín, Magalí, Ingrid, Axel y Maxi:
+      <strong>el sistema está esperando que lo hackeen.</strong><br><br>
+      <span style="color:var(--accent3); font-family:'Permanent Marker',cursive; font-size:1.3rem;">
+        ¡Nos recibimos! 🎓✨
+      </span>
+    </div>
+  </div>
+</section>
+
+
+<!-- PAC-MAN CODE REVIEWER -->
+<section id="pacman-section" style="position:relative;z-index:1;padding:4rem 2rem 5rem;">
+  <div class="section-divider">
+    <h2>Code Reviewer</h2>
+    <p>Pac-Man revisando y comiendo bugs en tiempo real &#127027;</p>
+  </div>
+  <div id="pacman-wrapper" style="max-width:860px;margin:2.5rem auto 0;background:#0a0a14;border-radius:24px;border:1px solid rgba(255,230,0,.15);overflow:hidden;box-shadow:0 0 60px rgba(255,214,0,.08);font-family:monospace;">
+    <div style="background:#13132a;padding:.7rem 1.2rem;display:flex;align-items:center;gap:.7rem;border-bottom:1px solid rgba(255,255,255,.06);">
+      <span style="width:12px;height:12px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+      <span style="width:12px;height:12px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
+      <span style="width:12px;height:12px;border-radius:50%;background:#28c840;display:inline-block;"></span>
+      <span style="color:#7a7a9a;font-size:.75rem;margin-left:.5rem;letter-spacing:.08em;">pacman_review.js</span>
+      <span id="pr-status" style="margin-left:auto;font-size:.7rem;color:#febc2e;letter-spacing:.08em;"></span>
+    </div>
+    <div id="pr-code" style="padding:1.2rem 1.4rem;font-size:.68rem;line-height:1.75;color:#c8c8e8;min-height:180px;max-height:320px;overflow-y:auto;position:relative;white-space:pre-wrap;word-break:break-all;"></div>
+    <div style="position:relative;height:40px;background:#050510;border-top:1px solid rgba(255,255,255,.04);overflow:hidden;">
+      <canvas id="pr-canvas" height="40" style="position:absolute;inset:0;display:block;"></canvas>
+    </div>
+    <div style="background:#13132a;padding:.55rem 1.4rem;display:flex;align-items:center;gap:1rem;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap;">
+      <span style="font-size:.68rem;color:#7a7a9a;">&#127027; Bugs:</span>
+      <span id="pr-bugs-found" style="font-size:.82rem;color:#ff5b5b;font-weight:bold;">0</span>
+      <span style="font-size:.68rem;color:#7a7a9a;margin-left:.4rem;">&#128128; Comidos:</span>
+      <span id="pr-bugs-eaten" style="font-size:.82rem;color:#28c840;font-weight:bold;">0</span>
+      <span style="font-size:.68rem;color:#7a7a9a;margin-left:.4rem;">&#11088; Score:</span>
+      <span id="pr-score" style="font-size:.82rem;color:#ffd400;font-weight:bold;">0</span>
+      <button id="pr-restart" style="margin-left:auto;background:linear-gradient(90deg,#ff3cac,#784ba0);border:none;border-radius:8px;color:#fff;font-size:.7rem;font-weight:700;padding:.3em .9em;cursor:pointer;letter-spacing:.06em;">&#9654; REINICIAR</button>
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  // ── RAW CODE to review (the provided pac-man game logic, excerpted for display) ──
+  const codeLines = [
+    { text: "const TILE = 16;", bug: false },
+    { text: "const COLS = 20;  // ✓ ok", bug: false },
+    { text: "let scroe = 0;  // BUG: typo variable", bug: true,  fix: "let score = 0;  // ✓ fixed" },
+    { text: "function alignd(px,py){  // BUG: typo fn name", bug: true,  fix: "function aligned(px,py){  // ✓ fixed" },
+    { text: "  return Math.abs((px - TILE/2) % TILE) < 0.01;", bug: false },
+    { text: "function canMoveTile(tx,ty){", bug: false },
+    { text: "  if (tx<0||tx>=COLS||ty<0||ty>=ROW) {  // BUG: ROWS mal escrito", bug: true,  fix: "  if (tx<0||tx>=COLS||ty<0||ty>=ROWS) {  // ✓ fixed" },
+    { text: "  return map[ty][tx] === 0;", bug: false },
+    { text: "}", bug: false },
+    { text: "pac.mouth += dt * 0.01;  // ✓ animación boca", bug: false },
+    { text: "for (const g of gosts) g.update();  // BUG: gosts en vez de ghosts", bug: true,  fix: "for (const g of ghosts) g.update();  // ✓ fixed" },
+    { text: "function countRemainingDots(){", bug: false },
+    { text: "  let c=0;", bug: false },
+    { text: "  for (let y=0;y<ROWS;y++)", bug: false },
+    { text: "    for (let x=0;x<COLS;x++) if (dots[y][x]) c++;", bug: false },
+    { text: "  retun c;  // BUG: return mal escrito", bug: true,  fix: "  return c;  // ✓ fixed" },
+    { text: "}", bug: false },
+    { text: "ctx.fillStyle = '#ffd400';  // ✓ color Pac-Man", bug: false },
+    { text: "canvas.style.width = W + 'px';  // ✓ CSS size", bug: false },
+    { text: "requestAnimationFrame(loop);  // ✓ game loop", bug: false },
+  ];
+
+  const codeEl   = document.getElementById('pr-code');
+  const statusEl = document.getElementById('pr-status');
+  const bugsFoundEl = document.getElementById('pr-bugs-found');
+  const bugsEatenEl = document.getElementById('pr-bugs-eaten');
+  const scoreEl2  = document.getElementById('pr-score');
+  const canvas2   = document.getElementById('pr-canvas');
+  const restartBtn = document.getElementById('pr-restart');
+
+  let bugsFound = 0, bugsEaten = 0, reviewScore = 0;
+  let lineIdx = 0;
+  let pacX = 10, pacDir = 1, pacMouth = 0;
+  let ghostX = -30;
+  let dots2 = [];
+  let bugPositions = [];
+  let raf2;
+  let trackW = 860;
+
+  function resizeCanvas() {
+    const wrapper = document.getElementById('pacman-wrapper');
+    trackW = wrapper ? wrapper.offsetWidth : 860;
+    canvas2.width = trackW;
+    canvas2.height = 40;
+  }
+
+  function initReview() {
+    bugsFound = 0; bugsEaten = 0; reviewScore = 0;
+    lineIdx = 0; pacX = 10; pacDir = 1; pacMouth = 0; ghostX = -30;
+    dots2 = []; bugPositions = [];
+    codeEl.innerHTML = '';
+    bugsFoundEl.textContent = '0';
+    bugsEatenEl.textContent = '0';
+    scoreEl2.textContent = '0';
+    statusEl.textContent = '⏳ ANALIZANDO...';
+    resizeCanvas();
+    scheduleNextLine();
+  }
+
+  function scheduleNextLine() {
+    if (lineIdx >= codeLines.length) {
+      setTimeout(() => {
+        statusEl.textContent = reviewScore > 0
+          ? '✅ REVISIÓN COMPLETA — ' + bugsEaten + ' bugs eliminados!'
+          : '✅ CÓDIGO PERFECTO!';
+      }, 600);
+      return;
+    }
+    setTimeout(() => {
+      addLine(codeLines[lineIdx]);
+      lineIdx++;
+      scheduleNextLine();
+    }, 420);
+  }
+
+  function addLine(lineData) {
+    const span = document.createElement('div');
+    span.style.cssText = 'display:flex;align-items:center;gap:.5rem;padding:0 .2rem;border-radius:4px;transition:background .3s;';
+
+    const lineNum = document.createElement('span');
+    lineNum.style.cssText = 'color:#444;min-width:1.8em;text-align:right;user-select:none;';
+    lineNum.textContent = String(lineIdx + 1).padStart(2, '0');
+
+    const code = document.createElement('span');
+    code.style.cssText = lineData.bug
+      ? 'color:#ff6b6b;flex:1;'
+      : 'color:#c8c8e8;flex:1;';
+    code.textContent = lineData.text;
+
+    if (lineData.bug) {
+      bugsFound++;
+      bugsFoundEl.textContent = bugsFound;
+      span.style.background = 'rgba(255,60,60,.12)';
+      span.dataset.hasBug = '1';
+      span.dataset.fix = lineData.fix;
+      span.dataset.codeSpanId = 'cs-' + lineIdx;
+      code.id = 'cs-' + lineIdx;
+
+      // place a bug dot on the track
+      const dotFrac = Math.random() * 0.7 + 0.1; // 10%..80% of track
+      bugPositions.push({ frac: dotFrac, eaten: false, lineEl: span, codeEl: code, fix: lineData.fix });
+    }
+
+    span.appendChild(lineNum);
+    span.appendChild(code);
+    codeEl.appendChild(span);
+    codeEl.scrollTop = codeEl.scrollHeight;
+  }
+
+  // ── TRACK ANIMATION ──
+  function drawTrack(ts) {
+    const ctx2 = canvas2.getContext('2d');
+    ctx2.clearRect(0, 0, trackW, 40);
+
+    // floor line
+    ctx2.strokeStyle = 'rgba(255,255,255,.06)';
+    ctx2.beginPath(); ctx2.moveTo(0, 38); ctx2.lineTo(trackW, 38); ctx2.stroke();
+
+    // draw bug dots
+    bugPositions.forEach(b => {
+      if (b.eaten) return;
+      const bx = b.frac * trackW;
+      // glow
+      const grd = ctx2.createRadialGradient(bx, 20, 0, bx, 20, 10);
+      grd.addColorStop(0, 'rgba(255,80,80,.6)');
+      grd.addColorStop(1, 'transparent');
+      ctx2.fillStyle = grd;
+      ctx2.beginPath(); ctx2.arc(bx, 20, 10, 0, Math.PI * 2); ctx2.fill();
+      // bug emoji via fillText
+      ctx2.font = '14px serif';
+      ctx2.textAlign = 'center';
+      ctx2.textBaseline = 'middle';
+      ctx2.fillText('🐛', bx, 20);
+    });
+
+    // move pacman
+    pacX += pacDir * 1.8;
+    if (pacX > trackW - 10) { pacX = trackW - 10; pacDir = -1; }
+    if (pacX < 10)           { pacX = 10;          pacDir =  1; }
+
+    // check if pac eats a bug
+    bugPositions.forEach(b => {
+      if (b.eaten) return;
+      const bx = b.frac * trackW;
+      if (Math.abs(pacX - bx) < 14) {
+        b.eaten = true;
+        bugsEaten++;
+        reviewScore += 100;
+        bugsEatenEl.textContent = bugsEaten;
+        scoreEl2.textContent = reviewScore;
+        // fix the line visually
+        if (b.codeEl) {
+          b.codeEl.style.color = '#4ade80';
+          b.codeEl.textContent = b.fix;
+          b.lineEl.style.background = 'rgba(40,200,80,.1)';
+        }
+        // score pop
+        spawnPop(bx, 10);
+      }
+    });
+
+    // ghost chasing pac from behind
+    const behindOffset = pacDir > 0 ? -60 : 60;
+    ghostX += (pacX + behindOffset - ghostX) * 0.04;
+
+    // draw ghost
+    ctx2.save();
+    ctx2.translate(ghostX, 20);
+    ctx2.fillStyle = '#ff5b5b';
+    ctx2.beginPath();
+    ctx2.arc(0, -4, 9, Math.PI, 0);
+    ctx2.rect(-9, -4, 18, 10);
+    ctx2.fill();
+    ctx2.fillStyle = '#fff';
+    ctx2.beginPath(); ctx2.arc(-3, -2, 2.5, 0, Math.PI*2); ctx2.fill();
+    ctx2.beginPath(); ctx2.arc(3, -2, 2.5, 0, Math.PI*2); ctx2.fill();
+    ctx2.fillStyle = '#222';
+    ctx2.beginPath(); ctx2.arc(-3, -2, 1, 0, Math.PI*2); ctx2.fill();
+    ctx2.beginPath(); ctx2.arc(3, -2, 1, 0, Math.PI*2); ctx2.fill();
+    ctx2.restore();
+
+    // draw pacman
+    pacMouth += 0.18;
+    const mouthAng = Math.abs(Math.sin(pacMouth)) * 0.38;
+    const faceAngle = pacDir > 0 ? 0 : Math.PI;
+    ctx2.fillStyle = '#ffd400';
+    ctx2.shadowColor = '#ffd400';
+    ctx2.shadowBlur = 10;
+    ctx2.beginPath();
+    ctx2.moveTo(pacX, 20);
+    ctx2.arc(pacX, 20, 11, faceAngle + mouthAng, faceAngle + Math.PI * 2 - mouthAng, false);
+    ctx2.closePath();
+    ctx2.fill();
+    ctx2.shadowBlur = 0;
+
+    raf2 = requestAnimationFrame(drawTrack);
+  }
+
+  // floating +100 pop
+  const pops = [];
+  function spawnPop(x, y) {
+    pops.push({ x, y, life: 40, vy: -1 });
+  }
+  // We need to draw pops inside drawTrack — patch it
+  const _origDraw = drawTrack;
+
+  function drawLoop(ts) {
+    const ctx2 = canvas2.getContext('2d');
+    ctx2.clearRect(0, 0, trackW, 40);
+
+    // floor
+    ctx2.strokeStyle = 'rgba(255,255,255,.06)';
+    ctx2.lineWidth = 1;
+    ctx2.beginPath(); ctx2.moveTo(0, 38); ctx2.lineTo(trackW, 38); ctx2.stroke();
+
+    // bug dots
+    bugPositions.forEach(b => {
+      if (b.eaten) return;
+      const bx = b.frac * trackW;
+      const grd = ctx2.createRadialGradient(bx, 20, 0, bx, 20, 10);
+      grd.addColorStop(0, 'rgba(255,80,80,.5)');
+      grd.addColorStop(1, 'transparent');
+      ctx2.fillStyle = grd;
+      ctx2.beginPath(); ctx2.arc(bx, 20, 10, 0, Math.PI*2); ctx2.fill();
+      ctx2.font = '13px serif'; ctx2.textAlign = 'center'; ctx2.textBaseline = 'middle';
+      ctx2.fillText('🐛', bx, 21);
+    });
+
+    // move pac
+    pacX += pacDir * 2;
+    if (pacX > trackW - 10) { pacX = trackW - 10; pacDir = -1; }
+    if (pacX < 10)           { pacX = 10;           pacDir = 1; }
+
+    // eat bugs
+    bugPositions.forEach(b => {
+      if (b.eaten) return;
+      if (Math.abs(pacX - b.frac * trackW) < 15) {
+        b.eaten = true;
+        bugsEaten++; reviewScore += 100;
+        bugsEatenEl.textContent = bugsEaten;
+        scoreEl2.textContent = reviewScore;
+        if (b.codeEl) {
+          b.codeEl.style.color = '#4ade80';
+          b.codeEl.textContent = b.fix;
+          b.lineEl.style.background = 'rgba(40,200,80,.1)';
+        }
+        pops.push({ x: b.frac * trackW, y: 25, life: 35, vy: -0.7 });
+      }
+    });
+
+    // ghost
+    const behind = pacDir > 0 ? -55 : 55;
+    ghostX += (pacX + behind - ghostX) * 0.045;
+    ctx2.save(); ctx2.translate(ghostX, 20);
+    ctx2.fillStyle = '#ff5b5b';
+    ctx2.beginPath(); ctx2.arc(0,-4,9,Math.PI,0); ctx2.rect(-9,-4,18,10); ctx2.fill();
+    ctx2.fillStyle='#fff';
+    ctx2.beginPath(); ctx2.arc(-3,-2,2.5,0,Math.PI*2); ctx2.fill();
+    ctx2.beginPath(); ctx2.arc(3,-2,2.5,0,Math.PI*2); ctx2.fill();
+    ctx2.fillStyle='#111';
+    ctx2.beginPath(); ctx2.arc(-3,-2,1.1,0,Math.PI*2); ctx2.fill();
+    ctx2.beginPath(); ctx2.arc(3,-2,1.1,0,Math.PI*2); ctx2.fill();
+    ctx2.restore();
+
+    // pacman
+    pacMouth += 0.17;
+    const mAng = Math.abs(Math.sin(pacMouth)) * 0.38;
+    const fAng = pacDir > 0 ? 0 : Math.PI;
+    ctx2.fillStyle = '#ffd400';
+    ctx2.shadowColor = 'rgba(255,212,0,.6)'; ctx2.shadowBlur = 12;
+    ctx2.beginPath();
+    ctx2.moveTo(pacX, 20);
+    ctx2.arc(pacX, 20, 12, fAng + mAng, fAng + Math.PI*2 - mAng, false);
+    ctx2.closePath(); ctx2.fill();
+    ctx2.shadowBlur = 0;
+
+    // score pops
+    for (let i = pops.length - 1; i >= 0; i--) {
+      const p = pops[i];
+      p.y += p.vy; p.life--;
+      ctx2.globalAlpha = p.life / 35;
+      ctx2.fillStyle = '#ffd400';
+      ctx2.font = 'bold 11px monospace';
+      ctx2.textAlign = 'center';
+      ctx2.fillText('+100', p.x, p.y);
+      ctx2.globalAlpha = 1;
+      if (p.life <= 0) pops.splice(i, 1);
+    }
+
+    raf2 = requestAnimationFrame(drawLoop);
+  }
+
+  restartBtn.addEventListener('click', () => {
+    cancelAnimationFrame(raf2);
+    initReview();
+    raf2 = requestAnimationFrame(drawLoop);
+  });
+
+  window.addEventListener('resize', () => {
+    resizeCanvas();
+  });
+
+  // start
+  initReview();
+  raf2 = requestAnimationFrame(drawLoop);
+})();
+</script>
+
+
+<footer>
+  Hecho con <span>♥</span> y mucho <span>{'</span>código<span>}'}</span> — 7mo C · IPEMYT 319 Roberto Fontanarrosa · Promoción 2026
+</footer>
+
+<script>
+// ──────────────────────────────────────────────
+// DATA
+// ──────────────────────────────────────────────
+const alumnos = [
+  {
+    name: "Nacho",
+    emoji: "🎮",
+    role: "El Gamer Dev",
+    skills: ["JavaScript","Gaming","Hardware"],
+    quote: "Si anda, no lo toques.",
+    c1: "#ff3cac", c2: "#ff7eb3", glow: "rgba(255,60,172,.2)"
+  },
+  {
+    name: "Lucas",
+    emoji: "🧠",
+    role: "El Pensador",
+    skills: ["Algoritmos","Python","Lógica"],
+    quote: "El bug es parte del arte.",
+    c1: "#00f5d4", c2: "#00b4d8", glow: "rgba(0,245,212,.2)"
+  },
+  {
+    name: "Azul",
+    emoji: "🌊",
+    role: "La Diseñadora",
+    skills: ["UI/UX","CSS","Creatividad"],
+    quote: "El diseño es 50% arte y 50% ctrl+Z.",
+    c1: "#784ba0", c2: "#a855f7", glow: "rgba(168,85,247,.2)"
+  },
+  {
+    name: "Joaquín",
+    emoji: "⚡",
+    role: "El Full Stack",
+    skills: ["Redes","HTML","React"],
+    quote: "404: sueños no encontrados. Just kidding.",
+    c1: "#ffe600", c2: "#ffa500", glow: "rgba(255,230,0,.2)"
+  },
+  {
+    name: "Yazmín",
+    emoji: "🌸",
+    role: "La Organizadora",
+    skills: ["Bases de Datos","Excel","Proyectos"],
+    quote: "El orden es la base del código.",
+    c1: "#ff6b6b", c2: "#ff9a9a", glow: "rgba(255,107,107,.2)"
+  },
+  {
+    name: "Magalí",
+    emoji: "🦋",
+    role: "La Creativa",
+    skills: ["Diseño","Redes Sociales","Photoshop"],
+    quote: "Cada píxel cuenta una historia.",
+    c1: "#f72585", c2: "#b5179e", glow: "rgba(247,37,133,.2)"
+  },
+  {
+    name: "Ingrid",
+    emoji: "🚀",
+    role: "La Innovadora",
+    skills: ["Cloud","Automatización","Linux"],
+    quote: "Los límites son solo configuraciones.",
+    c1: "#4cc9f0", c2: "#4361ee", glow: "rgba(76,201,240,.2)"
+  },
+  {
+    name: "Axel",
+    emoji: "🎸",
+    role: "El Hacker Cool",
+    skills: ["Ciberseguridad","Terminal","C++"],
+    quote: "Sudo make me a sandwich.",
+    c1: "#06d6a0", c2: "#1b9aaa", glow: "rgba(6,214,160,.2)"
+  },
+  {
+    name: "Maxi",
+    emoji: "🏆",
+    role: "El Competitivo",
+    skills: ["Competitive Prog","Java","Optimización"],
+    quote: "Siempre se puede hacer más rápido.",
+    c1: "#ffb703", c2: "#fb8500", glow: "rgba(255,183,3,.2)"
+  }
+];
+
+// ──────────────────────────────────────────────
+// RENDER CARDS
+// ──────────────────────────────────────────────
+const grid = document.getElementById('alumnosGrid');
+alumnos.forEach((a, i) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.setProperty('--c1', a.c1);
+  card.style.setProperty('--c2', a.c2);
+  card.style.setProperty('--c-glow', a.glow);
+  card.style.animationDelay = `${i * 0.08}s`;
+  card.innerHTML = `
+    <div class="card-avatar">${a.emoji}</div>
+    <div class="card-name">${a.name}</div>
+    <div class="card-role">${a.role}</div>
+    <div class="card-skills">
+      ${a.skills.map(s => `<span class="skill-tag">${s}</span>`).join('')}
+    </div>
+    <div class="card-quote">"${a.quote}"</div>
+  `;
+  card.addEventListener('mouseenter', () => cursor.classList.add('big'));
+  card.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+  card.addEventListener('click', () => launchConfetti(a.c1, a.c2));
+  grid.appendChild(card);
+});
+
+// ──────────────────────────────────────────────
+// EMOJI ROW
+// ──────────────────────────────────────────────
+const emojiRow = document.getElementById('emojiRow');
+alumnos.forEach((a, i) => {
+  const span = document.createElement('span');
+  span.className = 'emoji-item';
+  span.textContent = a.emoji;
+  span.title = a.name;
+  span.style.animationDelay = `${i * 0.4}s`;
+  emojiRow.appendChild(span);
+});
+
+// ──────────────────────────────────────────────
+// MANIFESTO TYPEWRITER
+// ──────────────────────────────────────────────
+const lines = [
+  { text: "Llegamos desde el primer año sin saber nada.", cls: "" },
+  { text: "Sobrevivimos los exámenes,", cls: "hi" },
+  { text: "los proyectos de madrugada,", cls: "hii" },
+  { text: "y los bugs imposibles.", cls: "hiii" },
+  { text: "Hoy somos Técnicos.", cls: "" },
+  { text: "Fontanarrosa, gracias.", cls: "hi" },
+];
+const mText = document.getElementById('manifestoText');
+let lineIdx = 0;
+function typeLine() {
+  if (lineIdx >= lines.length) return;
+  const { text, cls } = lines[lineIdx];
+  const p = document.createElement('p');
+  if (cls) p.className = cls;
+  mText.appendChild(p);
+  let charIdx = 0;
+  const iv = setInterval(() => {
+    p.textContent += text[charIdx];
+    charIdx++;
+    if (charIdx >= text.length) {
+      clearInterval(iv);
+      lineIdx++;
+      setTimeout(typeLine, 400);
+    }
+  }, 40);
+}
+// Trigger when in view
+const manifestoObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) { typeLine(); manifestoObs.disconnect(); }
+}, { threshold: .3 });
+manifestoObs.observe(document.getElementById('manifesto'));
+
+// ──────────────────────────────────────────────
+// CURSOR
+// ──────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+
+// ──────────────────────────────────────────────
+// PARTICLES
+// ──────────────────────────────────────────────
+const pContainer = document.getElementById('particles');
+const colors = ['#ff3cac','#00f5d4','#ffe600','#784ba0','#4cc9f0','#06d6a0'];
+for (let i = 0; i < 40; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = Math.random() * 6 + 2;
+  p.style.cssText = `
+    width:${size}px; height:${size}px;
+    left:${Math.random()*100}%;
+    background:${colors[Math.floor(Math.random()*colors.length)]};
+    animation-duration:${Math.random()*20+12}s;
+    animation-delay:${Math.random()*15}s;
+  `;
+  pContainer.appendChild(p);
+}
+
+// ──────────────────────────────────────────────
+// COUNTDOWN
+// ──────────────────────────────────────────────
+const egresoDate = new Date('2026-12-15T20:00:00');
+function updateCountdown() {
+  const now = new Date();
+  const diff = egresoDate - now;
+  if (diff <= 0) {
+    document.getElementById('cd-dias').textContent = '🎉';
+    document.getElementById('cd-horas').textContent = '🎉';
+    document.getElementById('cd-min').textContent = '🎉';
+    document.getElementById('cd-seg').textContent = '🎉';
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-dias').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-horas').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-min').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-seg').textContent = String(s).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ──────────────────────────────────────────────
+// STATS COUNTER
+// ──────────────────────────────────────────────
+const statNums = document.querySelectorAll('.stat-num[data-target]');
+const statObs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const target = parseInt(el.dataset.target);
+    if (isNaN(target)) return;
+    let current = 0;
+    const step = Math.ceil(target / 60);
+    const iv = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = current + (target === 100 ? '%' : '');
+      if (current >= target) clearInterval(iv);
+    }, 20);
+    statObs.unobserve(el);
+  });
+}, { threshold: .5 });
+statNums.forEach(el => statObs.observe(el));
+
+// ──────────────────────────────────────────────
+// CONFETTI
+// ──────────────────────────────────────────────
+function launchConfetti(c1, c2) {
+  const colors = [c1, c2, '#ffe600', '#fff'];
+  for (let i = 0; i < 30; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.cssText = `
+      left:${Math.random()*100}vw;
+      top:${Math.random()*50}vh;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      transform:rotate(${Math.random()*360}deg);
+      animation-delay:${Math.random()*0.3}s;
+      animation-duration:${Math.random()*0.8+1}s;
+      width:${Math.random()*10+5}px;
+      height:${Math.random()*6+3}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+    `;
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 2000);
+  }
+}
+
+// CLICK anywhere = mini confetti
+document.addEventListener('click', e => {
+  for (let i = 0; i < 12; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.cssText = `
+      left:${e.clientX + (Math.random()-0.5)*60}px;
+      top:${e.clientY + (Math.random()-0.5)*20}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-delay:${Math.random()*0.15}s;
+      width:${Math.random()*8+4}px;
+      height:${Math.random()*8+4}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      position:fixed;
+    `;
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 1600);
+  }
+});
+</script>
+</body>
+</html>
